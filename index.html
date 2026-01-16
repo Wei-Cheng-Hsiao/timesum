@@ -1,65 +1,107 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>TimePlus - 時間加法器</title>
+    <title>TimeSum - 單一檔案版本</title>
     
-    <!-- iOS 原生 App 體驗設置 -->
+    <!-- iOS 原生體驗設置 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TimePlus">
     <meta name="theme-color" content="#020617">
     
+    <!-- 外部庫 CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&family=Inter:wght@400;900&display=swap" rel="stylesheet">
     
     <style>
-      :root {
-        --sat: env(safe-area-inset-top);
-        --sab: env(safe-area-inset-bottom);
-      }
-      body { 
-        font-family: 'Inter', sans-serif; 
-        background-color: #020617;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        -webkit-tap-highlight-color: transparent;
-      }
-      .font-mono { font-family: 'JetBrains Mono', monospace; }
-      .safe-pb { padding-bottom: var(--sab); }
-      .safe-pt { padding-top: var(--sat); }
-      
-      /* 隱藏輸入框箭頭 */
-      input::-webkit-outer-spin-button,
-      input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #020617;
+            margin: 0;
+            overflow: hidden;
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
     </style>
-
-    <script type="importmap">
+<script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "lucide-react": "https://esm.sh/lucide-react@0.460.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
     "@google/genai": "https://esm.sh/@google/genai@^1.37.0"
   }
 }
 </script>
-  <link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="/index.css">
 </head>
-  <body>
+<body>
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-  <script type="module" src="/index.tsx"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const TimeCalculator = () => {
+            const [now, setNow] = useState(new Date());
+
+            useEffect(() => {
+                const timer = setInterval(() => setNow(new Date()), 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+
+            // 遞迴計算位數總和，直到變為個位數
+            // 例如 14:26 -> 1+4+2+6 = 13 -> 1+3 = 4
+            const getRecursiveSum = (timeStr) => {
+                let sum = timeStr.split('').reduce((acc, char) => acc + parseInt(char), 0);
+                while (sum >= 10) {
+                    sum = sum.toString().split('').reduce((acc, char) => acc + parseInt(char), 0);
+                }
+                return sum;
+            };
+
+            const finalResult = getRecursiveSum(hours + minutes);
+
+            return (
+                <div className="min-h-screen w-full flex flex-col items-center justify-center p-6">
+                    <div className="w-full max-w-sm flex flex-col items-center">
+                        
+                        {/* 1. 標題 */}
+                        <h1 className="text-slate-500 text-xs font-black uppercase tracking-[0.5em] mb-16">
+                            Time Sum
+                        </h1>
+
+                        {/* 2. 時間 (24H) */}
+                        <div className="flex flex-col items-center mb-20">
+                            <div className="text-8xl font-black font-mono text-white tracking-tighter flex items-center">
+                                <span>{hours}</span>
+                                <span className="text-slate-800 mx-2">:</span>
+                                <span>{minutes}</span>
+                            </div>
+                        </div>
+
+                        {/* 3. 加總結果 (不要過程) */}
+                        <div className="relative">
+                            {/* 背景柔光 */}
+                            <div className="absolute inset-0 bg-indigo-500/20 blur-[60px] rounded-full scale-150"></div>
+                            
+                            <div className="relative w-48 h-48 flex items-center justify-center bg-white rounded-full shadow-2xl">
+                                <span className="text-8xl font-black text-slate-950 font-mono">
+                                    {finalResult}
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TimeCalculator />);
+    </script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>

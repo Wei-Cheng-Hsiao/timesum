@@ -1,6 +1,5 @@
-
 {
-  "name": "TimePlus",
-  "description": "極簡 24 小時制時間加法工具。自動抓取當前時間並讓你輕鬆增加小時與分鐘，快速預測結果時間。",
+  "name": "TimeSum",
+  "description": "24 小時制位數遞迴加法器。自動抓取時間並顯示位數最終加總結果。",
   "requestFramePermissions": []
 }
