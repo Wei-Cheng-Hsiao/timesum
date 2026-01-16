@@ -1,5 +1,6 @@
+
 {
-  "name": "TimeSum",
-  "description": "A specialized 24-hour time calculator that sums the digits of the current time (e.g., 11:50 = 1+1+5+0 = 7) and provides an AI assistant for natural language time queries.",
+  "name": "TimePlus",
+  "description": "極簡 24 小時制時間加法工具。自動抓取當前時間並讓你輕鬆增加小時與分鐘，快速預測結果時間。",
   "requestFramePermissions": []
 }
