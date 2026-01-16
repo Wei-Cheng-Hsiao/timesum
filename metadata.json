@@ -1,0 +1,5 @@
+{
+  "name": "TimeSum",
+  "description": "A specialized 24-hour time calculator that sums the digits of the current time (e.g., 11:50 = 1+1+5+0 = 7) and provides an AI assistant for natural language time queries.",
+  "requestFramePermissions": []
+}
